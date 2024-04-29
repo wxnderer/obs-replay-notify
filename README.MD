@@ -20,7 +20,7 @@ This script is designed for use with OBS Studio to enhance user interaction by p
 
    pip install plyer
 
-3. Place the `obs-notify.py` script in your OBS Studio scripts directory.
+3. Place the `obs-notify.py` script along with `obs-notify.wav` in your OBS Studio scripts directory.
 
 ## Configuration
 

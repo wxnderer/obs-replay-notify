@@ -1,17 +1,13 @@
-"""
-Provides a script for OBS Studio that plays a sound or shows a Windows notification when the replay buffer is saved.
-
-The script adds an event callback to the OBS frontend that listens for the OBS_FRONTEND_EVENT_REPLAY_BUFFER_SAVED event. When this event is triggered, the script checks a setting to determine whether to play a sound or show a notification. The sound file is located in the same directory as the script, and the notification is displayed using the plyer library.
-
-The script also provides functions to load and unload the script, as well as to get the script properties.
-"""
 import obspython as obs
 import os, ctypes, sys
 from plyer import notification
+
 def script_properties():
     props = obs.obs_properties_create()
 
-    obs.obs_properties_add_bool(props,"show_notification", "Play windows notification instead of sound")
+    obs.obs_properties_add_bool(props, "show_notification", "Play windows notification instead of sound")
+    obs.obs_properties_add_bool(props, "custom_audio", "Use custom audio file")
+    obs.obs_properties_add_path(props, "wav_path", "WAV Audio File Path", obs.OBS_PATH_FILE, "WAV Files (*.wav)", None)
     
     return props
 
@@ -25,19 +21,18 @@ def event_callback(event):
     obs.script_log(obs.LOG_INFO, str(event))
     if event == obs.OBS_FRONTEND_EVENT_REPLAY_BUFFER_SAVED:
         script_path = os.path.dirname(os.path.realpath(__file__))
-        wav_path = os.path.join(script_path, "obs-notify.wav")
+        wav_path = obs.obs_data_get_string(global_settings, "wav_path")
         show_notification_setting = obs.obs_data_get_bool(global_settings, "show_notification")
+        custom_audio = obs.obs_data_get_bool(global_settings, "custom_audio")
         if show_notification_setting:
             show_notification("OBS Replay Buffer", "Your clip has been successfully saved!")
         else:
-            play_sound(wav_path)
+            if wav_path and custom_audio:
+                play_sound(wav_path)
+            else:
+                play_sound(os.path.join(script_path, "obs-notify.wav"))
 
         obs.script_log(obs.LOG_INFO, "Replay buffer saved")
-
-
-
-
-
 
 def script_unload():
     obs.script_log(obs.LOG_INFO, "Python script unloaded")
@@ -53,5 +48,4 @@ def show_notification(title, message):
         title=title,
         message=message,
         app_name="OBS Studio",
-
     )

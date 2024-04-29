@@ -32,16 +32,16 @@ def event_callback(event):
             if wav_path and custom_audio:
                 play_sound(wav_path)
             else:
-                play_sound(os.path.join(script_path, "obs-notify.wav"))
+                play_sound(os.path.join(script_path, "audio/obs-notify.wav"))
 
         obs.script_log(obs.LOG_INFO, "Replay buffer saved")
 
     if playStartStopEvent and event == obs.OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPED:
         obs.script_log(obs.LOG_INFO, "Recording stopped")
-        play_sound(os.path.join(script_path, "obs-replay-buffer-stopped.wav"))
+        play_sound(os.path.join(script_path, "audio/obs-replay-buffer-stopped.wav"))
     if playStartStopEvent and event == obs.OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTED:
         obs.script_log(obs.LOG_INFO, "Recording started")
-        play_sound(os.path.join(script_path, "obs-replay-buffer-started.wav"))
+        play_sound(os.path.join(script_path, "audio/obs-replay-buffer-started.wav"))
 
 def script_unload():
     obs.script_log(obs.LOG_INFO, "Python script unloaded")
